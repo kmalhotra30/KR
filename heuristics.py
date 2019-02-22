@@ -1,6 +1,7 @@
 from helperfunctions import *
 import numpy as np
 from operator import itemgetter
+from decimal import *
 
 def jeroslowEpsilonGreedy(c2vDict, v2cDict, assignments, epsilon = 0.1, topKpercent = 0.1):
 
@@ -11,7 +12,7 @@ def jeroslowEpsilonGreedy(c2vDict, v2cDict, assignments, epsilon = 0.1, topKperc
 
     # 0. Retrieve all unassigned variables
     unassigned = [key for key, value in assignments.items() if value == -1]
-    # print("unassigned are:", unassigned)
+    print("unassigned are:", unassigned)
     JWscore = []
 
     # 1. For each unassigned variable, calculate its JW-score 
@@ -30,7 +31,7 @@ def jeroslowEpsilonGreedy(c2vDict, v2cDict, assignments, epsilon = 0.1, topKperc
     JWscore = sorted(JWscore, key = itemgetter(1))
 
     # print("JW-scores (sorted):")
-    # print(JWscore)
+    print(JWscore)
 
     # 3. Make a selection based on chance
     if (np.random.choice([True, False], p = [epsilon, 1 - epsilon])):
@@ -70,7 +71,7 @@ def decideSplitAssignForLiteralBasedOnProbDistribution(literal, c2vDict , v2cDic
 
     #3. Metric calucation
 
-    metric_variable_pos = (np.log(variable_pos_count) + 1) / non_linear_sum_clause_length_pos
+    metric_variable_pos = (np.sqrt(variable_pos_count)) / non_linear_sum_clause_length_pos
 
 
     # Calculating metric for negative literal
@@ -91,7 +92,7 @@ def decideSplitAssignForLiteralBasedOnProbDistribution(literal, c2vDict , v2cDic
 
     #3. Metric calucation
 
-    metric_variable_neg = (np.log(variable_neg_count) + 1) / non_linear_sum_clause_length_neg
+    metric_variable_neg = (np.sqrt(variable_neg_count)) / non_linear_sum_clause_length_neg
 
 
     # Defining Probability Distribution by Normalization
