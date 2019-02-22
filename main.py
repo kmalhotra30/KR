@@ -4,7 +4,7 @@ from DPLL import *
 
 
 dimacs_sudoku_test_set = parseTestSudokus('./files/damnhard.sdk.txt')
-rules_file_content = read_dimacs_format('./files/sudoku-rules.txt')
+rules_file_content = read_dimacs_format('./files/dummy.txt')
 
 # for idx,sudoku_puzzle in enumerate(dimacs_sudoku_test_set) :
 
@@ -19,4 +19,4 @@ rules_file_content = read_dimacs_format('./files/sudoku-rules.txt')
 # rules_file_content = read_dimacs_format('./files/dummy.txt')
 c2vDict , v2cDict , countVarDict, assignments = simplifyTautologyAndPrepareDataStructures(rules_file_content)
 
-print(naiveDPLL(c2vDict,v2cDict,countVarDict,assignments, heuristic1 = True))
+print(naiveDPLL(c2vDict,v2cDict,countVarDict,assignments))

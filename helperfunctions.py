@@ -83,6 +83,7 @@ def simplifyTautologyAndPrepareDataStructures(rules_file_content):
             clause = line
             clause = clause.split(' ')
             clause = clause[:-1] # Getting rid of the 0 at the end
+            clause = [s for s in clause if s != ''] # Removing additional spaces
             
             tautologyFlag = False
             dummyDict = {} # Temporary Dict for each clause to remove tautology
