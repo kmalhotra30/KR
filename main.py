@@ -1,5 +1,5 @@
 from DPLL import *
-          
+
 
 
 
@@ -16,7 +16,7 @@ rules_file_content = read_dimacs_format('./files/sudoku-rules.txt')
 #     printSudokuGrid(naiveDPLLResult)
 
 
-rules_file_content = read_dimacs_format('./files/dummy.txt')
+# rules_file_content = read_dimacs_format('./files/dummy.txt')
 c2vDict , v2cDict , countVarDict, assignments = simplifyTautologyAndPrepareDataStructures(rules_file_content)
 
 print(naiveDPLL(c2vDict,v2cDict,countVarDict,assignments, heuristic1 = True))
