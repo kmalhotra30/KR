@@ -1,4 +1,29 @@
 import numpy as np
+import sys
+
+def sysArgParse():
+    # Parsing System Arguments for running heuristics
+    sysArguments = sys.argv
+    strBoolHeuristic1 = (sys.argv[1]).split('=')[-1]
+    strBoolHeuristic2 = (sys.argv[2]).split('=')[-1]
+    heuristic1Bool = False
+    heuristic2Bool = False
+
+    if strBoolHeuristic1 in ['True','true','1']: 
+        heuristic1Bool = True
+    if strBoolHeuristic2 in ['True','true','1']:
+        heuristic2Bool = True
+
+    return heuristic1Bool , heuristic2Bool
+
+def appendSplitCountToFile(splitCountList,heuristic1Bool,heuristic2Bool):
+
+    f= open("./output_files/splitCounts.txt","a+")
+    f.write("Heuristic 1  = " + str(heuristic1Bool) + "------" + "Heuristic 2  = " + str(heuristic2Bool) + 
+        "\n\n" )
+    f.write(str(splitCountList) + "\n\n\n\n")
+    f.close()
+
 
 def return_var_and_negated_var(variable):
 
@@ -12,8 +37,8 @@ def printSudokuGrid(assignments):
 
     #Helper function to visualize solved soduko
     M = np.zeros([9,9])
-    for l in assignments[1]:
-      if assignments[1][l] == 1:
+    for l in assignments:
+      if assignments[l] == 1:
           i = int(l[0])-1
           j = int(l[1]) - 1
           v = int(l[2]) 
@@ -86,9 +111,11 @@ def simplifyTautologyAndPrepareDataStructures(rules_file_content):
             clause = [s for s in clause if s != ''] # Removing additional spaces
             
             tautologyFlag = False
-            dummyDict = {} # Temporary Dict for each clause to remove tautology
+            dummyDict = {} # Temporary Dict for each clause to remove tautology and duplicates
             for variable in clause:
 
+                if variable in dummyDict: # Checking for Duplicates
+                    continue
                 variable , negatedVariable = return_var_and_negated_var(variable)
                 
                 if negatedVariable in dummyDict:

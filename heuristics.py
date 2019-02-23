@@ -12,7 +12,6 @@ def jeroslowEpsilonGreedy(c2vDict, v2cDict, assignments, epsilon = 0.1, topKperc
 
     # 0. Retrieve all unassigned variables
     unassigned = [key for key, value in assignments.items() if value == -1]
-    print("unassigned are:", unassigned)
     JWscore = []
 
     # 1. For each unassigned variable, calculate its JW-score 
@@ -20,24 +19,22 @@ def jeroslowEpsilonGreedy(c2vDict, v2cDict, assignments, epsilon = 0.1, topKperc
     for variable in unassigned:
         J = 0
         for clauseID in v2cDict[variable]: 
-            # print("variable ", variable, " is in ", c2vDict[clauseID])          
+                     
             J += pow(2, (-1) * len(c2vDict[clauseID]))
         JWscore.append((variable, J))
-
-    # print("JW-scores:")
-    # print(JWscore)
 
     # 2. Sort the variables in descending order
     JWscore = sorted(JWscore, key = itemgetter(1))
 
-    # print("JW-scores (sorted):")
-    print(JWscore)
-
+    
     # 3. Make a selection based on chance
     if (np.random.choice([True, False], p = [epsilon, 1 - epsilon])):
         # 4. Choose a random variable from the topKpercent 
         topK = int(len(JWscore) * topKpercent)
-        return JWscore[np.random.choice(range(topK))][0]
+        if topK !=0 :
+            return JWscore[np.random.choice(range(topK))][0]
+        else:
+            return JWscore[0][0]
     else:
         # 5. If we choose to use JW-ranking, simply pick the best variable
         return JWscore[0][0]
@@ -55,7 +52,7 @@ def decideSplitAssignForLiteralBasedOnProbDistribution(literal, c2vDict , v2cDic
 
     # Calculating metric for positive literal
 
-    #1. Obtaing count of positive variable
+    #1. Obtaining count of positive variable
 
     if variable in v2cDict:
         variable_pos_count = countVarDict[variable]
@@ -71,12 +68,12 @@ def decideSplitAssignForLiteralBasedOnProbDistribution(literal, c2vDict , v2cDic
 
     #3. Metric calucation
 
-    metric_variable_pos = (np.sqrt(variable_pos_count)) / non_linear_sum_clause_length_pos
+    metric_variable_pos = Decimal(np.sqrt(variable_pos_count)) / Decimal(non_linear_sum_clause_length_pos)
 
 
     # Calculating metric for negative literal
 
-    #1. Obtaing count of negative variable
+    #1. Obtaining count of negative variable
 
     if negatedVariable in v2cDict:
         variable_neg_count = countVarDict[negatedVariable]
@@ -92,7 +89,7 @@ def decideSplitAssignForLiteralBasedOnProbDistribution(literal, c2vDict , v2cDic
 
     #3. Metric calucation
 
-    metric_variable_neg = (np.sqrt(variable_neg_count)) / non_linear_sum_clause_length_neg
+    metric_variable_neg = Decimal(np.sqrt(variable_neg_count)) / Decimal(non_linear_sum_clause_length_neg)
 
 
     # Defining Probability Distribution by Normalization
