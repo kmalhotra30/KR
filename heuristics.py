@@ -3,6 +3,52 @@ import numpy as np
 from operator import itemgetter
 from decimal import *
 
+def jeroslowEpsilonGreedy2(c2vDict, v2cDict, assignments, epsilon = 0.1, topKpercent = 0.1):
+
+    # This heuristic implements an epsilon-greedy version
+    # of Jeroslow-Wang. With an epsilon-probability, we choose 
+    # a random variable from the top k-ranked variables, 
+    # instead of the highest ranked candidate 
+
+    # 0. Retrieve all unassigned variables
+    unassigned = [key for key, value in assignments.items() if value == -1]
+    JWscore = []
+
+    # 1. For each unassigned variable, calculate its JW-score 
+    #   *** J(x) = for each clause where x appears, sum : 2 ^ (-1 * len(clause))
+    for literal in unassigned:
+        
+        var , negatedVar = return_var_and_negated_var(literal)
+        if var in v2cDict:
+            
+            J = 0
+            for clauseID in v2cDict[var]: 
+                         
+                J += pow(2, (-1) * len(c2vDict[clauseID]))
+            JWscore.append((var, J))
+
+        if negatedVar in v2cDict:
+            
+            J = 0
+            for clauseID in v2cDict[negatedVar]: 
+                         
+                J += pow(2, (-1) * len(c2vDict[clauseID]))
+            JWscore.append((negatedVar, J))
+
+    # 2. Sort the variables in descending order
+    JWscore = sorted(JWscore, key = itemgetter(1))
+
+    # 3. Make a selection based on chance
+    if (np.random.choice([True, False], p = [epsilon, 1 - epsilon])):
+        # 4. Choose a random variable from the topKpercent 
+        topK = int(len(JWscore) * topKpercent)
+        if topK !=0 :
+            return JWscore[np.random.choice(range(topK))][0]
+        else:
+            return JWscore[0][0]
+    else:
+        # 5. If we choose to use JW-ranking, simply pick the best variable
+        return JWscore[0][0]
 def jeroslowEpsilonGreedy(c2vDict, v2cDict, assignments, epsilon = 0.1, topKpercent = 0.1):
 
     # This heuristic implements an epsilon-greedy version

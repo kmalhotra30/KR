@@ -183,13 +183,38 @@ def naiveDPLL(c2vDict , v2cDict , countVarDict , assignments,number_of_splits_li
         return True , assignments,number_of_splits_list
 
     else:
+        
+        branchToFalse = False # This is a flag which can be used to branch to false first and then true when backtracking.
         # If we want to use heuristic 1:
         if heuristic1 == True:
-            literal = jeroslowEpsilonGreedy(c2vDict, v2cDict, assignments, epsilon = 0.1, topKpercent = 0.1)
+            variable = jeroslowEpsilonGreedy2(c2vDict, v2cDict, assignments, epsilon = 0.1, topKpercent = 0.1)
+            
+            if variable[0] == '-':
+                branchToFalse = True
+                literal = variable[1:]
+            else:
+                literal = variable
+            
         # Else, do NOT use heuristic 1:
         else:
             literal = naiveChooseLiteral(assignments)
         
+        # At this step , literal has been chosen
+        # Now we need to see if heuristic 2 is toggled to True
+
+        if heuristic2 == True:
+            
+            decisionFromProbDist = decideSplitAssignForLiteralBasedOnProbDistribution(literal,c2vDict,v2cDict,countVarDict,v2cDict)
+
+            if decisionFromProbDist == True:
+                branchToFalse = False
+            else:
+                branchToFalse = True
+
+        # Deepcopy - as the same will be used again to branch differently
+        branchToFalseCopy = deepcopy(branchToFalse)
+                 
+
         if literal == []:
             return False,{},number_of_splits_list
         else:
@@ -203,24 +228,11 @@ def naiveDPLL(c2vDict , v2cDict , countVarDict , assignments,number_of_splits_li
             number_of_splits_list[0] += 1
             
                 
-            # If we want to use heuristic 2:
-            if heuristic2 == True:
-             
-                 decisionFromProbDist = decideSplitAssignForLiteralBasedOnProbDistribution(literal,c2vDict,v2cDict,countVarDict,v2cDict)
+            if branchToFalse == False:
 
-                 # Deepcopy - as the same will be used again to branch differently
-                 decisionFromProbDistCopy = deepcopy(decisionFromProbDist)
-                 
-                 if decisionFromProbDist == True:
-
-                    c2vDict , v2cDict ,countVarDict , assignments = modifyClausesWithVariableSetToTrue(literal,c2vDict,v2cDict,countVarDict,assignments)
-                 else:
-
-                    c2vDict , v2cDict ,countVarDict , assignments = modifyClausesWithVariableSetToFalse(literal,c2vDict,v2cDict,countVarDict,assignments)
-            
-            # Else, do NOT use heuristic 2
-            else:
                 c2vDict , v2cDict ,countVarDict , assignments = modifyClausesWithVariableSetToTrue(literal,c2vDict,v2cDict,countVarDict,assignments)
+            else:
+                c2vDict , v2cDict ,countVarDict , assignments = modifyClausesWithVariableSetToFalse(literal,c2vDict,v2cDict,countVarDict,assignments)
 
             # Recursive call
             
@@ -233,18 +245,12 @@ def naiveDPLL(c2vDict , v2cDict , countVarDict , assignments,number_of_splits_li
 
                 # Increment split count
                 number_of_splits_list[0] += 1
-                if heuristic2 == True:
-                    
-                    if decisionFromProbDistCopy == True:
+                if branchToFalseCopy == False:
 
-                        c2vDict , v2cDict, countVarDict , assignments = modifyClausesWithVariableSetToFalse(literal,c2vDictCopy,v2cDictCopy,countVarDictCopy,assignmentsCopy)
-                    else:
-
-                        c2vDict , v2cDict, countVarDict , assignments = modifyClausesWithVariableSetToTrue(literal,c2vDictCopy,v2cDictCopy,countVarDictCopy,assignmentsCopy)
-                
-                # Heuristic 2 not in use
-                else:
                     c2vDict , v2cDict, countVarDict , assignments = modifyClausesWithVariableSetToFalse(literal,c2vDictCopy,v2cDictCopy,countVarDictCopy,assignmentsCopy)
+                else:
+
+                    c2vDict , v2cDict, countVarDict , assignments = modifyClausesWithVariableSetToTrue(literal,c2vDictCopy,v2cDictCopy,countVarDictCopy,assignmentsCopy)
                 
                 # Recursive Call
                 naiveDPLLResult2 = naiveDPLL(c2vDict , v2cDict ,countVarDict , assignments,number_of_splits_list= number_of_splits_list,singleStepSimplification = singleStepSimplification ,heuristic1 = heuristic1,heuristic2 = heuristic2)
