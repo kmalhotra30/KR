@@ -1,5 +1,6 @@
 import numpy as np
 import sys
+import datetime
 
 def sysArgParse():
     # Parsing System Arguments for running heuristics
@@ -18,9 +19,10 @@ def sysArgParse():
 
 def appendSplitCountToFile(splitCountList,heuristic1Bool,heuristic2Bool):
 
-    f= open("./output_files/splitCounts.txt","a+")
+    currentTimeStamp = str(datetime.datetime.now())
+    f= open("./output_files/splitCountsLog.txt","a+")
     f.write("Heuristic 1  = " + str(heuristic1Bool) + "------" + "Heuristic 2  = " + str(heuristic2Bool) + 
-        "\n\n" )
+        "-----------" + currentTimeStamp + "\n\n" )
     f.write(str(splitCountList) + "\n\n\n\n")
     f.close()
 

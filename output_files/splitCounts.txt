@@ -1,6 +1,0 @@
-Heuristic 1  = True------Heuristic 2  = True
-
-[33]
-
-
-
