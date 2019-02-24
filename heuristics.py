@@ -107,15 +107,17 @@ def decideSplitAssignForLiteralBasedOnProbDistribution(literal, c2vDict , v2cDic
 
 
     #2. Obtaining sum of 2 ** clause lenghts
+    if variable_pos_count!=0:
 
-    non_linear_sum_clause_length_pos = 0
-    for clause in v2cDict[variable]:
-        non_linear_sum_clause_length_pos += 2 ** len(c2vDict[clause])
+        non_linear_sum_clause_length_pos = 0
+        for clause in v2cDict[variable]:
+            non_linear_sum_clause_length_pos += 2 ** len(c2vDict[clause])
+        #3. Metric calucation
+        metric_variable_pos = Decimal(np.sqrt(variable_pos_count)) / Decimal(non_linear_sum_clause_length_pos)
+    else:
+        metric_variable_pos = 0
 
-    #3. Metric calucation
-
-    metric_variable_pos = Decimal(np.sqrt(variable_pos_count)) / Decimal(non_linear_sum_clause_length_pos)
-
+    
 
     # Calculating metric for negative literal
 
@@ -128,19 +130,25 @@ def decideSplitAssignForLiteralBasedOnProbDistribution(literal, c2vDict , v2cDic
 
 
     #2. Obtaining sum of 2 ** clause lenghts
+    if variable_neg_count!= 0:
+    
+        non_linear_sum_clause_length_neg = 0
+        for clause in v2cDict[negatedVariable]:
+            non_linear_sum_clause_length_neg += 2 ** len(c2vDict[clause])
 
-    non_linear_sum_clause_length_neg = 0
-    for clause in v2cDict[negatedVariable]:
-        non_linear_sum_clause_length_neg += 2 ** len(c2vDict[clause])
-
-    #3. Metric calucation
-
-    metric_variable_neg = Decimal(np.sqrt(variable_neg_count)) / Decimal(non_linear_sum_clause_length_neg)
+        #3. Metric calucation
+        metric_variable_neg = Decimal(np.sqrt(variable_neg_count)) / Decimal(non_linear_sum_clause_length_neg)
+    else:
+        metric_variable_neg = 0
 
 
     # Defining Probability Distribution by Normalization
 
-    probability_literal_true = (metric_variable_pos) / (metric_variable_pos + metric_variable_neg)
+    # If metric for both is 0 , then first set to true and then false
+    if metric_variable_pos == 0 and metric_variable_neg == 0:
+        probability_literal_true  = 1
+    else:
+        probability_literal_true = (metric_variable_pos) / (metric_variable_pos + metric_variable_neg)
     probability_literal_false = 1 - probability_literal_true
 
     sampled_decision = np.random.choice([True,False],p=[probability_literal_true,probability_literal_false])
