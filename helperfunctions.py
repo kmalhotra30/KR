@@ -17,12 +17,12 @@ def sysArgParse():
 
     return heuristic1Bool , heuristic2Bool
 
-def appendSplitCountToFile(splitCountList,heuristic1Bool,heuristic2Bool):
+def appendSplitCountToFile(splitCountList,heuristic1Bool,heuristic2Bool,seed=-1):
 
     currentTimeStamp = str(datetime.datetime.now())
     f= open("./output_files/splitCountsLog.txt","a+")
     f.write("Heuristic 1  = " + str(heuristic1Bool) + "------" + "Heuristic 2  = " + str(heuristic2Bool) + 
-        "-----------" + currentTimeStamp + "\n\n" )
+        "-----------" + currentTimeStamp + "-----------seed = " + str(seed) + "\n\n" )
     f.write(str(splitCountList) + "\n\n\n\n")
     f.close()
 

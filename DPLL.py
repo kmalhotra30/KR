@@ -180,14 +180,14 @@ def naiveDPLL(c2vDict , v2cDict , countVarDict , assignments,number_of_splits_li
     #Solution Attaintment Check 
     if any(c2vDict.values()) == False:
 
-        return True , assignments,number_of_splits_list
+        return True , assignments , number_of_splits_list
 
     else:
         
         branchToFalse = False # This is a flag which can be used to branch to false first and then true when backtracking.
         # If we want to use heuristic 1:
         if heuristic1 == True:
-            variable = jeroslowEpsilonGreedy2(c2vDict, v2cDict, assignments, epsilon = 0.1, topKpercent = 0.1)
+            variable = jeroslowEpsilonGreedy2(c2vDict, v2cDict, assignments, epsilon = 0.05, topKpercent = 0.1)
             
             if variable[0] == '-':
                 branchToFalse = True
@@ -195,15 +195,12 @@ def naiveDPLL(c2vDict , v2cDict , countVarDict , assignments,number_of_splits_li
             else:
                 literal = variable
             
-        # Else, do NOT use heuristic 1:
-        else:
-            literal = naiveChooseLiteral(assignments)
         
-        # At this step , literal has been chosen
         # Now we need to see if heuristic 2 is toggled to True
 
-        if heuristic2 == True:
+        elif heuristic2 == True:
             
+            literal = naiveDLCSLiteralSelection(countVarDict,assignments)
             decisionFromProbDist = decideSplitAssignForLiteralBasedOnProbDistribution(literal,c2vDict,v2cDict,countVarDict,v2cDict)
 
             if decisionFromProbDist == True:
@@ -211,6 +208,11 @@ def naiveDPLL(c2vDict , v2cDict , countVarDict , assignments,number_of_splits_li
             else:
                 branchToFalse = True
 
+        # Else, not using any heuristic:
+        else:
+            literal = naiveChooseLiteral(assignments)
+       
+        # At this step , literal has been chosen 
         # Deepcopy - as the same will be used again to branch differently
         branchToFalseCopy = deepcopy(branchToFalse)
                  

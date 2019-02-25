@@ -1,11 +1,14 @@
 from DPLL import *
 from helperfunctions import * 
 
+#Setting the seed 
+seed = 1
+np.random.seed(seed)
 #Parse system arguments (command line args)
 heuristic1Bool , heuristic2Bool = sysArgParse()
 
 rules_file_content = read_dimacs_format('./files/sudoku-rules.txt')
-dimacs_sudoku_test_set = parseTestSudokus('./files/1000 sudokus.txt')
+dimacs_sudoku_test_set = parseTestSudokus('./files/test.txt')
 
 # List for storing split counts 
 splitCountList = []
@@ -22,8 +25,8 @@ for idx,sudoku_puzzle in enumerate(dimacs_sudoku_test_set) :
     print("Number of Splits = " + str(dpllResult[2][0]))
 
     # Uncomment the below line to print the sudoku grid
-    # printSudokuGrid(dpllResult[1])
+    #printSudokuGrid(dpllResult[1])
     splitCountList.append(dpllResult[2][0])
 
-appendSplitCountToFile(splitCountList,heuristic1Bool,heuristic2Bool)
+appendSplitCountToFile(splitCountList,heuristic1Bool,heuristic2Bool,seed=seed)
 
