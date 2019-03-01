@@ -1,0 +1,30 @@
+#!/bin/bash
+
+algorithmFlag="$1"
+inputFileName="$2"
+H1=""
+H2=""
+if [ $# -ne 2 ]
+then
+	echo "Incorrect number of arguments!"
+	exit 1
+fi
+
+if [ "$algorithmFlag" = "-S1" ]
+then
+	H1="False"
+	H2="False"
+elif [ "$algorithmFlag" = "-S2" ]
+then
+	H1="True"
+	H2="False"
+elif [ "$algorithmFlag" = "-S3" ]
+then 
+	H1="False"
+	H2="True"
+else 
+	echo "Incorrect flag for strategy (DPLL , Heuristic 1 , Heuristic 2)"
+	exit 1
+fi 
+
+python SAT_Solver.py H1="$H1" H2="$H2" $2
