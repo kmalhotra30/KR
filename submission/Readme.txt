@@ -9,4 +9,3 @@ For example: './SAT -S2  input.txt' - This will execute DPLL + heuristic 1 for t
 Note : -
 1) We assume that this module is being executed on a regular linux envoirnment. 
 2) We assume that the input file and this module are in the same directory.
-3) -1 is assigned to the literals which don't contribute to the solution (independent literals). Their truth values can be interpreted as '1' (True) or '0' (False).
