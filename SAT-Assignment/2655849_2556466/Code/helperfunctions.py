@@ -25,8 +25,16 @@ def writeOutputDimacs(filename,assignments):
     f = open("./" + filename + ".out","w+")
     if len(assignments) != 0:
 
+        f.write("p cnf " + str(len(assignments)) + " " + str(len(assignments)) +"\n")
         for literal in assignments:
-            f.write(str(literal) + " " + str(assignments[literal]) + "\n" )
+
+            # Setting all unassigned to true
+            if assignments[literal] == -1:
+                assignments[literal] = 1
+
+            if assignments[literal] == 0:
+                f.write("-")
+            f.write(str(literal) + " 0\n" )
 
     f.close()
 def appendSplitCountToFile(splitCountList,heuristic1Bool,heuristic2Bool,seed=-1):
